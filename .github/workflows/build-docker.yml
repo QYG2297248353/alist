@@ -1,0 +1,35 @@
+name: Mirror Docker Images
+
+on:
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Docker Hub credentials
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo
+
+      - name: Mirror xhofe/alist:v3.40.0
+        run: |
+          skopeo copy \
+            docker://xhofe/alist:v3.40.0 \
+            docker://qyg2297248353/alist:v3.40.0
+
+      - name: Mirror xhofe/alist-aria2:v3.40.0
+        run: |
+          skopeo copy \
+            docker://xhofe/alist-aria2:v3.40.0 \
+            docker://qyg2297248353/alist-aria2:v3.40.0
+
+      - name: Mirror xhofe/alist:v3.40.0-ffmpeg
+        run: |
+          skopeo copy \
+            docker://xhofe/alist:v3.40.0-ffmpeg \
+            docker://qyg2297248353/alist:v3.40.0-ffmpeg
